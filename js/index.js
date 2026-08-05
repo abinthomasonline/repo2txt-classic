@@ -278,16 +278,21 @@ function setupShowMoreInfoButton() {
 }
 
 function updateInfoIcon(button, tokenInfo) {
+    const isHidden = tokenInfo.classList.contains('hidden');
+    button.setAttribute('aria-expanded', String(!isHidden));
+    button.setAttribute('aria-label', `${isHidden ? 'Show' : 'Hide'} information about GitHub access tokens`);
+
     const icon = button.querySelector('[data-lucide]');
     if (icon) {
-        icon.setAttribute('data-lucide', tokenInfo.classList.contains('hidden') ? 'info' : 'x');
+        icon.setAttribute('data-lucide', isHidden ? 'info' : 'x');
         lucide.createIcons();
     }
 }
 
 // Create and download zip file
 async function createAndDownloadZip(fileContents) {
-    const zip = new JSZip();
+    await import('./jszip.min.js');
+    const zip = new window.JSZip();
 
     fileContents.forEach(file => {
         // Remove leading slash if present

@@ -1,7 +1,8 @@
 // Function to extract files from a zip archive
 async function extractZipContents(zipFile) {
     try {
-        const zip = await JSZip.loadAsync(zipFile);
+        await import('./jszip.min.js');
+        const zip = await window.JSZip.loadAsync(zipFile);
         const tree = [];
         const gitignoreContent = ['.git/**'];
         let pathZipMap = {};

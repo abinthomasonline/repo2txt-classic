@@ -1,3 +1,45 @@
+let tokenizerPromise;
+
+function loadTokenizer() {
+    if (window.GPTTokenizer_cl100k_base) {
+        return Promise.resolve(window.GPTTokenizer_cl100k_base);
+    }
+
+    if (!tokenizerPromise) {
+        tokenizerPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/gpt-tokenizer';
+            script.async = true;
+            script.onload = () => {
+                if (window.GPTTokenizer_cl100k_base) {
+                    resolve(window.GPTTokenizer_cl100k_base);
+                } else {
+                    tokenizerPromise = undefined;
+                    reject(new Error('Tokenizer loaded without the expected API'));
+                }
+            };
+            script.onerror = () => {
+                tokenizerPromise = undefined;
+                reject(new Error('Failed to load the tokenizer'));
+            };
+            document.head.appendChild(script);
+        });
+    }
+
+    return tokenizerPromise;
+}
+
+async function updateTokenCount(formattedText) {
+    try {
+        const { encode } = await loadTokenizer();
+        const tokensCount = encode(formattedText).length;
+        document.getElementById('tokenCount').innerHTML = `Approximate Token Count: ${tokensCount} <a href="https://github.com/niieani/gpt-tokenizer" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:text-blue-800 underline">(Using cl100k_base tokenizer)</a>`;
+    } catch (error) {
+        document.getElementById('tokenCount').innerHTML = '';
+        console.log(error);
+    }
+}
+
 // Display directory structure
 function displayDirectoryStructure(tree) {
     tree = tree.filter(item => item.type === 'blob').sort(sortContents);
@@ -30,8 +72,11 @@ function displayDirectoryStructure(tree) {
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.className = 'mr-2';
-        
-        if (typeof item === 'object' && (!item.type || typeof item.type !== 'string')) {
+
+        const isDirectory = typeof item === 'object' && (!item.type || typeof item.type !== 'string');
+        checkbox.setAttribute('aria-label', `${isDirectory ? 'Select folder' : 'Select file'} ${name}`);
+
+        if (isDirectory) {
             // Directory node
             createDirectoryNode(li, checkbox, name, item, parentUl);
         } else {
@@ -49,7 +94,7 @@ function displayDirectoryStructure(tree) {
         checkbox.classList.add('directory-checkbox');
         li.appendChild(checkbox);
 
-        const collapseButton = createCollapseButton();
+        const collapseButton = createCollapseButton(name);
         li.appendChild(collapseButton);
 
         appendIcon(li, 'folder');
@@ -87,10 +132,14 @@ function displayDirectoryStructure(tree) {
         li.appendChild(document.createTextNode(name));
     }
 
-    function createCollapseButton() {
+    function createCollapseButton(name) {
         const collapseButton = document.createElement('button');
+        collapseButton.type = 'button';
         collapseButton.innerHTML = '<i data-lucide="chevron-down" class="w-4 h-4"></i>';
-        collapseButton.className = 'mr-1 focus:outline-none';
+        collapseButton.className = 'mr-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-offset-2';
+        collapseButton.dataset.itemName = name;
+        collapseButton.setAttribute('aria-expanded', 'true');
+        collapseButton.setAttribute('aria-label', `Collapse folder ${name}`);
         return collapseButton;
     }
 
@@ -115,7 +164,10 @@ function displayDirectoryStructure(tree) {
         collapseButton.addEventListener('click', function() {
             ul.classList.toggle('hidden');
             const icon = this.querySelector('[data-lucide]');
-            if (ul.classList.contains('hidden')) {
+            const isCollapsed = ul.classList.contains('hidden');
+            this.setAttribute('aria-expanded', String(!isCollapsed));
+            this.setAttribute('aria-label', `${isCollapsed ? 'Expand' : 'Collapse'} folder ${this.dataset.itemName}`);
+            if (isCollapsed) {
                 icon.setAttribute('data-lucide', 'chevron-right');
             } else {
                 icon.setAttribute('data-lucide', 'chevron-down');
@@ -129,6 +181,7 @@ function displayDirectoryStructure(tree) {
         extCheckbox.type = 'checkbox';
         extCheckbox.className = 'mr-1';
         extCheckbox.value = extension;
+        extCheckbox.setAttribute('aria-label', `Include .${extension} files`);
         return extCheckbox;
     }
 
@@ -200,13 +253,15 @@ function displayDirectoryStructure(tree) {
         const extentionCheckboxesContainer = document.getElementById('extentionCheckboxes');
         extentionCheckboxesContainer.innerHTML = '';
         extentionCheckboxesContainer.className = 'mt-4';
-        const extentionCheckboxesContainerLabel = document.createElement('label');
-        extentionCheckboxesContainerLabel.innerHTML = 'Filter by file extensions:';
+        const extentionCheckboxesContainerLabel = document.createElement('p');
+        extentionCheckboxesContainerLabel.id = 'extension-filter-label';
+        extentionCheckboxesContainerLabel.textContent = 'Filter by file extensions:';
         extentionCheckboxesContainerLabel.className = 'block text-sm font-medium text-gray-600';
         extentionCheckboxesContainer.appendChild(extentionCheckboxesContainerLabel);
         const extentionCheckboxesContainerUl = document.createElement('ul');
         extentionCheckboxesContainer.appendChild(extentionCheckboxesContainerUl);
         extentionCheckboxesContainerUl.className = 'mt-1';
+        extentionCheckboxesContainerUl.setAttribute('aria-labelledby', 'extension-filter-label');
         const sortedExtensions = Object.entries(extensionCheckboxes).sort((a, b) => b[1].children.length - a[1].children.length);
         for (const [extension, checkbox] of sortedExtensions) {
             const extCheckbox = checkbox.checkbox;
@@ -301,14 +356,7 @@ function formatRepoContents(contents) {
     });
 
     const formattedText = `Directory Structure:\n\n${index}\n${text}`;
-    try {
-        const { encode, decode } = GPTTokenizer_cl100k_base;
-        const tokensCount = encode(formattedText).length;
-        document.getElementById('tokenCount').innerHTML = `Approximate Token Count: ${tokensCount} <a href="https://github.com/niieani/gpt-tokenizer" target="_blank" class="text-blue-500 hover:text-blue-700 underline">(Using cl100k_base tokenizer)</a>`;
-    } catch (error) {
-        document.getElementById('tokenCount').innerHTML = '';
-        console.log(error);
-    }
+    void updateTokenCount(formattedText);
     return formattedText;
 }
 

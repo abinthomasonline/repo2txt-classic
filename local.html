@@ -31,8 +31,41 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" sizes="180x180">
     <link rel="manifest" href="/site.webmanifest">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="js/lucide.min.js"></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "@id": "https://repo2txt.simplebasedomain.com/local.html#web-application",
+      "name": "repo2txt Classic — Local Folder Converter",
+      "alternateName": "Local Folder to Text Converter",
+      "url": "https://repo2txt.simplebasedomain.com/local.html",
+      "description": "Convert a local folder or ZIP archive into one formatted text file in your browser.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript and a modern web browser with file access support.",
+      "isAccessibleForFree": true,
+      "image": "https://repo2txt.simplebasedomain.com/assets/social-local.png",
+      "featureList": [
+        "Read a local folder or ZIP archive in the browser",
+        "Filter files and extensions",
+        "Combine selected source files into formatted text",
+        "Estimate output token count",
+        "Copy or download the generated text"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Abin Thomas",
+        "url": "https://abinthomas.in/"
+      }
+    }
+    </script>
+    <link rel="stylesheet" href="/css/tailwind.min.css">
+    <script defer src="js/lucide.min.js"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CYF86LN5WM"></script>
     <script>
@@ -42,20 +75,18 @@
 
         gtag('config', 'G-CYF86LN5WM');
     </script>
-    <script src="js/jszip.min.js"></script>
-    <script async src="https://unpkg.com/gpt-tokenizer"></script>
     <style>
         input[type=file]::file-selector-button {
             font-weight: 500;
             font-size: 14px;
-            background-color: rgb(59, 130, 246);
+            background-color: rgb(29, 78, 216);
             color: rgb(255, 255, 255);
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
         input[type=file]::file-selector-button:hover {
-            background-color: rgb(37, 99, 235);
+            background-color: rgb(30, 64, 175);
         }
     </style>
 </head>
@@ -68,7 +99,7 @@
         <header>
             <h1 id="page-title" class="text-3xl font-bold mb-2 text-center text-gray-600">Convert a Local Folder to Text</h1>
             <p class="text-lg text-center text-gray-500 mb-6">Combine a directory or ZIP archive into one formatted text file</p>
-            <p class="text-sm text-center text-gray-500 mb-3"><a href="https://abinthomas.in/repo2txt/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700">Try the new version of repo2txt</a></p>
+            <p class="text-sm text-center text-gray-500 mb-3"><a href="https://abinthomas.in/repo2txt/" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:text-blue-800">Try the new version of repo2txt</a></p>
         </header>
 
         <aside aria-labelledby="paperpmf-promo-title" class="mb-6 rounded-md border border-indigo-200 bg-indigo-50 p-4">
@@ -82,7 +113,7 @@
                     href="https://paperpmf.com/?utm_source=repo2txt.simplebasedomain.com&amp;utm_medium=referral&amp;utm_campaign=paperpmf_crosspromo_2026&amp;utm_content=classic_converter_banner#diagnostic-intake"
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="Try the free 10-person PaperPMF preview (opens in a new tab)"
+                    aria-label="Try the free 10-person preview — PaperPMF (opens in a new tab)"
                     class="inline-flex min-h-11 w-full flex-shrink-0 items-center justify-center rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
                 >
                     Try the free 10-person preview <span aria-hidden="true" class="ml-1">&rarr;</span>
@@ -103,7 +134,7 @@
         </div>
 
         <div>
-            <a href="/" class="text-blue-500 hover:text-blue-700 underline">
+            <a href="/" class="text-blue-700 hover:text-blue-800 underline">
                 Convert From GitHub Instead
             </a>
         </div>
@@ -111,21 +142,22 @@
         <div id="extentionCheckboxes" class="mt-4"></div>
         <div id="directoryStructure" class="mt-6"></div>
 
-        <button id="generateTextButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline hidden flex items-center justify-center">
+        <button id="generateTextButton" class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 hidden flex items-center justify-center">
             <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
             Generate Text File
         </button>
 
         <div id="tokenCount" class="mt-4 text-sm text-gray-500"></div>
 
+        <label for="outputText" class="sr-only">Generated local project text</label>
         <textarea id="outputText" rows="20" class="mt-4 w-full p-2 border rounded-md font-mono" readonly></textarea>
 
         <div class="mt-4 flex space-x-4">
-            <button id="copyButton" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline hidden flex items-center justify-center">
+            <button id="copyButton" class="flex-1 bg-indigo-700 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 hidden flex items-center justify-center">
                 <i data-lucide="copy" class="w-5 h-5 mr-2"></i>
                 Copy to Clipboard
             </button>
-            <button id="downloadButton" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline hidden flex items-center justify-center">
+            <button id="downloadButton" class="flex-1 bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2 hidden flex items-center justify-center">
                 <i data-lucide="download" class="w-5 h-5 mr-2"></i>
                 Download Text File
             </button>
@@ -164,8 +196,8 @@
         </section>
     </section>
     </main>
-    <footer class="mt-8 text-center text-sm text-gray-500">
-        <p>If you encounter any errors, please email <a href="mailto:abinthomasonline@gmail.com" class="text-blue-500 hover:text-blue-700">abinthomasonline@gmail.com</a> or <a href="https://github.com/abinthomasonline/repo2txt/issues" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700">raise a GitHub issue</a>.</p>
+    <footer class="mt-8 text-center text-sm text-gray-600">
+        <p>If you encounter any errors, please email <a href="mailto:abinthomasonline@gmail.com" class="text-blue-700 hover:text-blue-800">abinthomasonline@gmail.com</a> or <a href="https://github.com/abinthomasonline/repo2txt/issues" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:text-blue-800">raise a GitHub issue</a>.</p>
     </footer>
     <script type="module" src="js/local.js"></script>
 </body>

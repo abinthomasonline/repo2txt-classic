@@ -1,0 +1,7 @@
+/*
+ * Rebuild with:
+ * npx tailwindcss@3.4.17 -i ./css/tailwind.css -o ./css/tailwind.min.css --content './*.html,./js/*.js' --minify
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
