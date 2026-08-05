@@ -69,7 +69,7 @@ async function handleZipSelection(event) {
             "Please ensure:\n" +
             "1. The zip file is not corrupted.\n" +
             "2. The zip file contains text files that can be read.\n" +
-            "3. The zip file format is supported (.zip, .rar, .7z).\n";
+            "3. The selected file uses the supported .zip format.\n";
     }
 }
 

@@ -3,16 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Local Directory to Plain Text Converter | Convert Local Directories to Text</title>
-    <meta name="description" content="Convert local directories to plain text files easily. Our tool helps you transform local files into a single formatted text file for better readability and analysis.">
-    <meta name="keywords" content="local directory, code converter, plain text, file analysis">
+    <title>Convert a Local Folder to Text | repo2txt Classic</title>
+    <meta name="description" content="Convert a local folder or ZIP archive into one formatted text file in your browser. Select files, filter extensions, then copy or download the result.">
     <meta name="author" content="abinthomasonline">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#2563eb">
     <link rel="canonical" href="https://repo2txt.simplebasedomain.com/local.html">
-    <meta property="og:title" content="Local Directory to Plain Text Converter">
-    <meta property="og:description" content="Convert local directories to plain text files easily. Transform files into a single formatted text file.">
-    <meta property="og:url" content="https://repo2txt.simplebasedomain.com/local.html">
     <meta property="og:type" content="website">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <meta property="og:site_name" content="repo2txt Classic">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="Convert a Local Folder to Text | repo2txt Classic">
+    <meta property="og:description" content="Choose files from a local folder or ZIP archive and combine them into one formatted text file in your browser.">
+    <meta property="og:url" content="https://repo2txt.simplebasedomain.com/local.html">
+    <meta property="og:image" content="https://repo2txt.simplebasedomain.com/assets/social-local.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Illustration of a folder and ZIP archive flowing into one formatted text document">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Convert a Local Folder to Text | repo2txt Classic">
+    <meta name="twitter:description" content="Choose local files and combine them into one formatted text file in your browser.">
+    <meta name="twitter:image" content="https://repo2txt.simplebasedomain.com/assets/social-local.png">
+    <meta name="twitter:image:alt" content="Illustration of a folder and ZIP archive flowing into one formatted text document">
+    <link rel="icon" href="/assets/favicon.svg" sizes="any" type="image/svg+xml">
+    <link rel="icon" href="/assets/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/assets/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" sizes="180x180">
+    <link rel="manifest" href="/site.webmanifest">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="js/lucide.min.js"></script>
     <!-- Google tag (gtag.js) -->
@@ -42,13 +60,16 @@
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen p-4 md:p-8 text-gray-600">
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 relative">
-        <a href="https://github.com/abinthomasonline/repo2txt" target="_blank" class="absolute top-2 right-2">
+    <main class="max-w-4xl mx-auto">
+    <section aria-labelledby="page-title" class="bg-white rounded-lg shadow-md p-6 relative">
+        <a href="https://github.com/abinthomasonline/repo2txt" target="_blank" rel="noopener noreferrer" aria-label="View repo2txt on GitHub (opens in a new tab)" class="absolute top-2 right-2">
             <i data-lucide="github" class="w-8 h-8 text-gray-600 hover:text-gray-800"></i>
         </a>
-        <h1 class="text-3xl font-bold mb-2 text-center text-gray-600">Local Directory to Plain Text</h1>
-        <p class="text-lg text-center text-gray-500 mb-6">Convert Local Directory or Zip File to a Single Formatted Text File</p>
-        <p class="text-sm text-center text-gray-500 mb-3"><a href="https://abinthomas.in/repo2txt/" target="_blank" class="text-blue-500 hover:text-blue-700">New version. I hate it. You might love it.</a></p>
+        <header>
+            <h1 id="page-title" class="text-3xl font-bold mb-2 text-center text-gray-600">Convert a Local Folder to Text</h1>
+            <p class="text-lg text-center text-gray-500 mb-6">Combine a directory or ZIP archive into one formatted text file</p>
+            <p class="text-sm text-center text-gray-500 mb-3"><a href="https://abinthomas.in/repo2txt/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700">Try the new version of repo2txt</a></p>
+        </header>
 
         <aside aria-labelledby="paperpmf-promo-title" class="mb-6 rounded-md border border-indigo-200 bg-indigo-50 p-4">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -72,12 +93,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
                 <label for="directoryPicker" class="block text-sm font-medium text-gray-600">Select Directory:</label>
-                <input type="file" id="directoryPicker" webkitdirectory directory multiple class="mt-1 block w-full">
+                <input type="file" id="directoryPicker" webkitdirectory multiple class="mt-1 block w-full">
             </div>
             <div>
-                <label for="zipPicker" class="block text-sm font-medium text-gray-600">Or Upload Zip File:</label>
-                <input type="file" id="zipPicker" accept=".zip,.rar,.7z" class="mt-1 block w-full">
-                <p class="text-xs text-gray-500 mt-1">Supported formats: .zip, .rar, .7z</p>
+                <label for="zipPicker" class="block text-sm font-medium text-gray-600">Or Select a ZIP File:</label>
+                <input type="file" id="zipPicker" accept=".zip,application/zip" class="mt-1 block w-full">
+                <p class="text-xs text-gray-500 mt-1">Supported archive format: .zip</p>
             </div>
         </div>
 
@@ -109,9 +130,42 @@
                 Download Text File
             </button>
         </div>
-    </div>
+    </section>
+
+    <section aria-labelledby="about-local-converter" class="mt-8 bg-white rounded-lg shadow-md p-6">
+        <h2 id="about-local-converter" class="text-2xl font-bold text-gray-700">Create one text file from a local codebase</h2>
+        <p class="mt-3 leading-7">The local converter turns files from a folder or ZIP archive into one structured text output. Use the directory tree and extension filters to keep only the source, documentation, or configuration files you need before copying or downloading the result.</p>
+
+        <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <section aria-labelledby="local-steps">
+                <h3 id="local-steps" class="text-lg font-semibold text-gray-700">How to convert a folder to text</h3>
+                <ol class="mt-3 list-decimal space-y-2 pl-5 leading-6">
+                    <li>Select a local directory, or choose a ZIP archive.</li>
+                    <li>Review the generated file tree and uncheck anything you do not want to include.</li>
+                    <li>Use the extension filters to narrow the export to relevant file types.</li>
+                    <li>Generate the combined text, then copy it or download it as a text file.</li>
+                </ol>
+            </section>
+
+            <section aria-labelledby="local-use-cases">
+                <h3 id="local-use-cases" class="text-lg font-semibold text-gray-700">Useful for code and documentation</h3>
+                <ul class="mt-3 list-disc space-y-2 pl-5 leading-6">
+                    <li>Prepare focused source context for an LLM prompt.</li>
+                    <li>Combine project documentation and configuration for review.</li>
+                    <li>Estimate the output token count before using the generated text.</li>
+                    <li>Use the <a href="/" class="text-blue-600 underline hover:text-blue-800">GitHub repository to text converter</a> when the project is hosted on GitHub.</li>
+                </ul>
+            </section>
+        </div>
+
+        <section aria-labelledby="local-privacy" class="mt-6 border-t border-gray-200 pt-6">
+            <h3 id="local-privacy" class="text-lg font-semibold text-gray-700">Your selected files stay in the browser</h3>
+            <p class="mt-2 leading-7">repo2txt Classic reads selected folders and ZIP archives through browser file APIs and assembles the output locally. The site has no file-upload backend, so your selected source files are not uploaded to repo2txt. ZIP is the only supported archive format.</p>
+        </section>
+    </section>
+    </main>
     <footer class="mt-8 text-center text-sm text-gray-500">
-        <p>If you encounter any errors, please email <a href="mailto:abinthomasonline@gmail.com" class="text-blue-500 hover:text-blue-700">abinthomasonline@gmail.com</a> or <a href="https://github.com/abinthomasonline/repo2txt/issues" target="_blank" class="text-blue-500 hover:text-blue-700">raise a GitHub issue</a>.</p>
+        <p>If you encounter any errors, please email <a href="mailto:abinthomasonline@gmail.com" class="text-blue-500 hover:text-blue-700">abinthomasonline@gmail.com</a> or <a href="https://github.com/abinthomasonline/repo2txt/issues" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700">raise a GitHub issue</a>.</p>
     </footer>
     <script type="module" src="js/local.js"></script>
 </body>
